@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 7a0daaf8095e70e4f877f50137de9d47
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Blissful Thinking
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 1212e9f93182d48f5831672fdbcf8c7f, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
