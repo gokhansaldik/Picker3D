@@ -7,6 +7,8 @@ TagManager:
   - Ball
   - FanPower
   - FirstStage
+  - StopZone
+  - Platform
   layers:
   - Default
   - TransparentFX
