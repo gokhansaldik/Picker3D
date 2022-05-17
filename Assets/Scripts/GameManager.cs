@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     public Text Canvas_nextLevelNo;
     public Color LevelColor;
     public Renderer[] Grounds;
+    public AudioClip VictoryAudioClip, GameOverAudioClip;
+    public AudioSource GameMusicAudioSource;
 
     private void Awake()
     {
@@ -52,6 +54,11 @@ public class GameManager : MonoBehaviour
             TitleScreen.SetActive(false);
             LevelProgression.SetActive(true);
         }
+    }
+    private void Start()
+    {
+        GameMusicAudioSource = Camera.main.GetComponent<AudioSource>();
+       
     }
 
     private void Update()
@@ -86,7 +93,13 @@ public class GameManager : MonoBehaviour
             {
                 PlayerPrefs.SetInt("savedLevel", _nextLevelNo);
                 SceneManager.LoadScene(_nextLevelNo);
+                if(CurrentLevelNo == 3)
+                {
+                    SceneManager.LoadScene(0);
+  
+                }
             }
+            
         }
     }
 
@@ -103,11 +116,14 @@ public class GameManager : MonoBehaviour
                 _levelFailTimerStart = false;
                 LevelFailed.SetActive(true);
                 _levelFailed = true;
+                GameMusicAudioSource.Stop();
+                GameMusicAudioSource.PlayOneShot(GameOverAudioClip);
                 Debug.Log("Level Failed!");
             }
         }
     }
 
+    
     public void toggleFailTimer(bool state)
     {
         if (state)
@@ -124,16 +140,24 @@ public class GameManager : MonoBehaviour
     public void showLevelCompleteScreen()
     {
         _levelComplete = true;
+        GameMusicAudioSource.Stop();
+        
+        GameMusicAudioSource.PlayOneShot(VictoryAudioClip);
+        
         if ((!GameComplete) && (CurrentLevelNo == _maxLevelNo))
         {
             GameComplete = true;
+            
             Debug.Log("Random level progression has started.");
         }
         LevelProgression.SetActive(false);
         LevelComplete.SetActive(true);
         FindObjectOfType<CameraController>().Target = null;
+
+        
     }
 
+    
     void PaintLevel()
     {
         for (int i = 0; i < Grounds.Length; i++)
@@ -165,12 +189,12 @@ public class GameManager : MonoBehaviour
 
     void DebugControls()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             Debug.Log("Player save data has been reset.");
             PlayerPrefs.SetInt("savedLevel", 1);
             GameManager.GameComplete = false;
         }
     }
-
+    
 }
