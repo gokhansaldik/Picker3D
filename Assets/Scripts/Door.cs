@@ -4,30 +4,25 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    public bool isOpen = false;
-    public float rotationSpeed = 1f;
-    float rotationTimer = 1.4f;
-
-    public Transform doorL;
-    public Transform doorR;
-        
-
+    public bool IsOpen = false;
+    public float RotationSpeed = 1f;
+    private float _rotationTimer = 1.4f;
+    public Transform DoorLeft;
+    public Transform DoorRight;
     private void FixedUpdate()
     {
-        if (isOpen)
+        if (IsOpen)
         {
-            if (rotationTimer > 0)
+            if (_rotationTimer > 0)
             {
-                rotationTimer -= Time.fixedDeltaTime;
-                doorL.transform.Translate(-rotationSpeed, 0, 0);
-                doorR.transform.Translate(rotationSpeed, 0, 0);
+                _rotationTimer -= Time.fixedDeltaTime;
+                DoorLeft.transform.Translate(-RotationSpeed, 0, 0);
+                DoorRight.transform.Translate(RotationSpeed, 0, 0);
             }
             else
             {
                 this.enabled = false;
             }
-
         }
     }
-    
 }

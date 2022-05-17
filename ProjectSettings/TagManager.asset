@@ -9,6 +9,7 @@ TagManager:
   - FirstStage
   - StopZone
   - Platform
+  - FinishLine
   layers:
   - Default
   - TransparentFX

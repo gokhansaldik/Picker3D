@@ -4,60 +4,61 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody rb;
-    GameManager gamaManager;
-
-    public bool isMoving = false;
-    public float moveSpeed = 1f;
-
-    bool inputEnabled = true;
-    public float strafeSpeed = 1f;
-    float strafeDir = 0;
-    bool mouseDown = false;
-    Vector3 mousePos;
-    Vector3 last_mousePos;
+    private Rigidbody _rigidBody;
+    private GameManager _gamaManager;
+    
+    
+    public bool IsMoving = false;
+    
+    public float MoveSpeed = 1f;
+    private bool InputEnabled = true;
+    public float StrafeSpeed = 1f;
+    private float _strafeDir = 0;
+    private bool _mouseDown = false;
+    private Vector3 _mousePos;
+    private Vector3 _lastMousePos;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        gamaManager = FindObjectOfType<GameManager>();
+        _rigidBody = GetComponent<Rigidbody>();
+        _gamaManager = FindObjectOfType<GameManager>();
     }
 
     private void Update()
     {
-        if ((isMoving)&&(inputEnabled))
+        if ((IsMoving)&&(InputEnabled))
         {
             if (Input.GetMouseButtonDown(0))
             {
-                mouseDown = true;
+                _mouseDown = true;
             }
 
             if (Input.GetMouseButton(0))
             {
-                if (mouseDown)
+                if (_mouseDown)
                 {
-                    mousePos = Input.mousePosition - last_mousePos;
+                    _mousePos = Input.mousePosition - _lastMousePos;
                 }
                 
 
-                if (mousePos.x != 0f)
+                if (_mousePos.x != 0f)
                 {
                     if (Input.GetAxis("Mouse X") > 0)
                     {
-                        strafeDir = 1;
+                        _strafeDir = 1;
                     }
                     else if (Input.GetAxis("Mouse X") < 0)
                     {
-                        strafeDir = -1;
+                        _strafeDir = -1;
                     }
                 }
-                last_mousePos = Input.mousePosition;
+                _lastMousePos = Input.mousePosition;
             }
 
             if (Input.GetMouseButtonUp(0))
             {
-                mouseDown = false;
-                strafeDir = 0;
+                _mouseDown = false;
+                _strafeDir = 0;
             }
         }
         
@@ -66,13 +67,13 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isMoving)
+        if (IsMoving)
         {
-            rb.velocity = new Vector3(strafeSpeed* strafeDir, rb.velocity.y, moveSpeed);
+            _rigidBody.velocity = new Vector3(StrafeSpeed* _strafeDir, _rigidBody.velocity.y, MoveSpeed);
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            _rigidBody.velocity = Vector3.zero;
         }
     }
 
@@ -81,22 +82,22 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.tag == "StopZone")
         {
             Debug.Log("Player stopped");
-            isMoving = false;
-            mouseDown = false;
-            strafeDir = 0;
+            IsMoving = false;
+            _mouseDown = false;
+            _strafeDir = 0;
 
             other.gameObject.SetActive(false);
-            gamaManager.toggleFailTimer(true);
+            _gamaManager.toggleFailTimer(true);
         }
         else if (other.gameObject.tag == "FinishLine")
         {
             Debug.Log("Player completed the level.");
-            inputEnabled = false;
-            mouseDown = false;
-            strafeDir = 0;
+            InputEnabled = false;
+            _mouseDown = false;
+            _strafeDir = 0;
 
             other.gameObject.SetActive(false);
-            gamaManager.showLevelCompleteScreen();
+            _gamaManager.showLevelCompleteScreen();
         }
     }
 

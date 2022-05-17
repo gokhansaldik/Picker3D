@@ -7,119 +7,102 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public static bool showTitle = true;
-    public static bool gameComplete = false;
-
-    bool gameStarted = false;
-
-    public int currentLevelNo = 1;
-    int nextLevelNo = 2;
-    int maxLevelNo = 10;
-
-    float levelFailTimer = 5f;
-    bool levelFailTimerStart = false;
-    bool levelFailed = false;
-
-    bool levelComplete = false;
-
-    [Header("UI Objects")]
-    public GameObject canvas_titleScreen;
-    public GameObject canvas_tapToStart;
-    public GameObject canvas_levelFailed;
-    public GameObject canvas_levelComplete;
-    public GameObject canvas_levelProgression;
-    
-    public Text canvas_currentLevelNo;
-    public Text canvas_nextLevelNo;
-
-     
-
-
-
-    public Color levelColor;
-    public Renderer[] grounds;
+    public static bool ShowTitle = true;
+    public static bool GameComplete = false;
+    private bool _gameStarted = false;
+    public int CurrentLevelNo = 1;
+    private int _nextLevelNo = 2;
+    private int _maxLevelNo = 10;
+    private float _levelFailTimer = 5f;
+    private bool _levelFailTimerStart = false;
+    private bool _levelFailed = false;
+    private bool _levelComplete = false;
+    public GameObject TitleScreen;
+    public GameObject TapToStart;
+    public GameObject LevelFailed;
+    public GameObject LevelComplete;
+    public GameObject LevelProgression;
+    public Text Canvas_currentLevelNo;
+    public Text Canvas_nextLevelNo;
+    public Color LevelColor;
+    public Renderer[] Grounds;
 
     private void Awake()
     {
         PaintLevel();
-        if ((!gameComplete)&&(currentLevelNo < maxLevelNo))
+        if ((!GameComplete)&&(CurrentLevelNo < _maxLevelNo))
         {
-            nextLevelNo = currentLevelNo + 1;
+            _nextLevelNo = CurrentLevelNo + 1;
         }
         else
         {
-            nextLevelNo = ChooseRandomLevel();
+            _nextLevelNo = ChooseRandomLevel();
         }
-        canvas_currentLevelNo.text = currentLevelNo.ToString();
-        canvas_nextLevelNo.text = nextLevelNo.ToString();
-        
-        canvas_levelFailed.SetActive(false);
-        canvas_levelComplete.SetActive(false);
-        if (showTitle)
+        Canvas_currentLevelNo.text = CurrentLevelNo.ToString();
+        Canvas_nextLevelNo.text = _nextLevelNo.ToString();
+        LevelFailed.SetActive(false);
+        LevelComplete.SetActive(false);
+        if (ShowTitle)
         {
-            canvas_titleScreen.SetActive(true);
-            canvas_levelProgression.SetActive(false);
+            TitleScreen.SetActive(true);
+            LevelProgression.SetActive(false);
         }
         else
         {
-            canvas_titleScreen.SetActive(false);
-            canvas_levelProgression.SetActive(true);
+            TitleScreen.SetActive(false);
+            LevelProgression.SetActive(true);
         }
     }
 
     private void Update()
     {
         DebugControls();
-
-        if (!gameStarted)
+        if (!_gameStarted)
         {
             if (Input.GetMouseButton(0))
             {
-                gameStarted = true;
-                if (showTitle)
+                _gameStarted = true;
+                if (ShowTitle)
                 {
-                    showTitle = false;
-                    canvas_titleScreen.SetActive(false);
-                    canvas_levelProgression.SetActive(true);
+                    ShowTitle = false;
+                    TitleScreen.SetActive(false);
+                    LevelProgression.SetActive(true);
                 }
 
-                canvas_tapToStart.SetActive(false);
-                FindObjectOfType<PlayerController>().isMoving = true;
+                TapToStart.SetActive(false);
+                FindObjectOfType<PlayerController>().IsMoving = true;
             }
         }
-        else if (levelFailed)
+        else if (_levelFailed)
         {
             if (Input.GetMouseButton(0))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
-        else if (levelComplete)
+        else if (_levelComplete)
         {
             if (Input.GetMouseButton(0))
             {
-                PlayerPrefs.SetInt("savedLevel", nextLevelNo);
-                SceneManager.LoadScene(nextLevelNo);
+                PlayerPrefs.SetInt("savedLevel", _nextLevelNo);
+                SceneManager.LoadScene(_nextLevelNo);
             }
         }
-
-
-
     }
 
     private void FixedUpdate()
     {
-        if (levelFailTimerStart)
+        if (_levelFailTimerStart)
         {
-            if (levelFailTimer > 0)
+            if (_levelFailTimer > 0)
             {
-                levelFailTimer -=  Time.fixedDeltaTime;
+                _levelFailTimer -=  Time.fixedDeltaTime;
             }
             else
             {
-                levelFailTimerStart = false;
-                canvas_levelFailed.SetActive(true);
-                levelFailed = true;
+                _levelFailTimerStart = false;
+                LevelFailed.SetActive(true);
+                _levelFailed = true;
                 Debug.Log("Level Failed!");
             }
         }
@@ -129,54 +112,50 @@ public class GameManager : MonoBehaviour
     {
         if (state)
         {
-            levelFailTimer = 6f;
-            levelFailTimerStart = true;
+            _levelFailTimer = 6f;
+            _levelFailTimerStart = true;
         }
         else
         {
-            levelFailTimerStart = false;
+            _levelFailTimerStart = false;
         }
-        
     }
 
     public void showLevelCompleteScreen()
     {
-        levelComplete = true;
-        if ((!gameComplete) && (currentLevelNo == maxLevelNo))
+        _levelComplete = true;
+        if ((!GameComplete) && (CurrentLevelNo == _maxLevelNo))
         {
-            gameComplete = true;
+            GameComplete = true;
             Debug.Log("Random level progression has started.");
         }
-        
-
-        canvas_levelProgression.SetActive(false);
-        canvas_levelComplete.SetActive(true);
-
-        FindObjectOfType<CameraController>().target = null;
+        LevelProgression.SetActive(false);
+        LevelComplete.SetActive(true);
+        FindObjectOfType<CameraController>().Target = null;
     }
 
     void PaintLevel()
     {
-        for (int i = 0; i < grounds.Length; i++)
+        for (int i = 0; i < Grounds.Length; i++)
         {
-            grounds[i].material.color = levelColor;
+            Grounds[i].material.color = LevelColor;
         }
         Goal[] goals = FindObjectsOfType<Goal>();
         for (int i = 0; i < goals.Length; i++)
         {
-            goals[i].mainPlatform_endColor = levelColor;
-            goals[i].unitCompleteColor = levelColor;
+            goals[i].MainPlatformEndColor = LevelColor;
+            goals[i].UnitCompleteColor = LevelColor;
         }
-        canvas_currentLevelNo.transform.parent.gameObject.GetComponent<Image>().color = levelColor;
+        Canvas_currentLevelNo.transform.parent.gameObject.GetComponent<Image>().color = LevelColor;
     }
 
     int ChooseRandomLevel()
     {
-        int result = Random.Range(1, maxLevelNo);
-        if (result == currentLevelNo)
+        int result = Random.Range(1, _maxLevelNo);
+        if (result == CurrentLevelNo)
         {
             result += 1;
-            if (result > maxLevelNo)
+            if (result > _maxLevelNo)
             {
                 result = 1;
             }
@@ -186,12 +165,11 @@ public class GameManager : MonoBehaviour
 
     void DebugControls()
     {
-        //Reset Game
         if (Input.GetKeyDown(KeyCode.R))
         {
             Debug.Log("Player save data has been reset.");
             PlayerPrefs.SetInt("savedLevel", 1);
-            GameManager.gameComplete = false;
+            GameManager.GameComplete = false;
         }
     }
 
